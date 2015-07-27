@@ -2,32 +2,28 @@ package es.uca.webservices.testgen.metamorphic.reader;
 
 import java.io.*;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 public class BPELExprReader {
-	public static void main(String[] args) {
-		File archivo = null;
-		FileReader fBPEL = null;
-		BufferedReader br = null;
+	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document doc = builder.parse(new File("/home/kevin/Colaboracion/LoanApprovalProcess.bpel"));
 		
-		try {
-			//Se abre el fichero y se crea el buffer para leerlo
-			archivo = new File("/home/kevin/Colaboracion/LoanApprovalProcess.bpel");
-			fBPEL = new FileReader(archivo);
-			br = new BufferedReader(fBPEL);
-			
-			//Lectura
-			String linea;
-			while((linea=br.readLine()) != null)
-				System.out.println(linea);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}finally{
-			try{
-				if( null != fBPEL ){
-					fBPEL.close();
-				}
-			}catch (Exception e2){
-				e2.printStackTrace();
-			}
-		}
+		XPathFactory xPathfactory = XPathFactory.newInstance();
+		XPath xpath = xPathfactory.newXPath();
+		XPathExpression expr = xpath.compile("/");
+		
+		System.out.println(expr.evaluate(doc, XPathConstants.STRING));
 	}
 }
