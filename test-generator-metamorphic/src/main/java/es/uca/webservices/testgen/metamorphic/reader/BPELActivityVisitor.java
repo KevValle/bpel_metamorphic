@@ -90,7 +90,7 @@ public class BPELActivityVisitor {
 		impresora.close();
 		
 		
-		System.out.println("Comprobar fichero en "+test.ruta);
+		System.out.println("Comprobar fichero en "+test.ruta+" y en "+test.ruta2);
 	}
 
 }
