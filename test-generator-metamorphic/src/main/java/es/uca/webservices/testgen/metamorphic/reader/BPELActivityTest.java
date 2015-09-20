@@ -11,6 +11,9 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xmlbeans.XmlException;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TActivity;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
 import org.xml.sax.SAXException;
 
 import es.uca.webservices.bpel.InvalidProcessException;
@@ -54,8 +57,26 @@ public class BPELActivityTest {
 		List<TActivity> activities = this.bpel.getActivities();
 		for(TActivity actividad : activities)
 		{
-			System.out.println("Encontrada actividad "+i);
-			i++;
+			/*System.out.println("Encontrada actividad "+i);
+			i++;*/
+			
+			//TEST PURPOSES
+			/*TSources sources = actividad.getSources();
+			if(sources != null) {
+				for(TSource source : sources.getSourceArray())
+				{
+					TCondition expr = source.getTransitionCondition();
+					System.out.println("aaa");
+					if(expr != null)
+					{
+						System.out.println("aaa");
+						System.out.println(expr);
+					}
+				}
+			}*/
+			
+			
+			
 		}
 	}
 	
