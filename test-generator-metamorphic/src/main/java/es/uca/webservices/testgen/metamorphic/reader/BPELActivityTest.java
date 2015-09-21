@@ -1,5 +1,8 @@
 package es.uca.webservices.testgen.metamorphic.reader;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.xmlbeans.XmlException;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TActivity;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
 import org.xml.sax.SAXException;
@@ -27,6 +31,10 @@ public class BPELActivityTest {
 	
 	//Path
 	private String path;
+	
+	//ELIMINAR
+	//Ruta donde escribirá los archivos auxiliares
+	private String path2 = "/home/kevin/Colaboracion/actividades/actividad";
 	
 	//Raw constants
 	//private Map<String, Set<String>> rawConstants;
@@ -50,7 +58,7 @@ public class BPELActivityTest {
 	}
 	
 	//Obtiene las actividades del fichero bpel que está abierto en la propia clase
-	public void visitActivities()
+	public void visitActivities() throws IOException
 	{
 		//ELIMINAR
 		int i = 0;
@@ -75,9 +83,32 @@ public class BPELActivityTest {
 				}
 			}*/
 			
+			System.out.println("Me llamo "+actividad.getName());
 			
+			File aux = new File(this.path2 + actividad.getName() + ".txt");
+			BufferedWriter imp = new BufferedWriter(new FileWriter(aux));
+			imp.write(actividad.toString());
+			imp.close();
 			
+			i++;
+			
+			accept(actividad);			
 		}
+	}
+	
+	//Funciones para visitar cada actividad individualmente
+	public void accept(TActivity actividad)
+	{
+		if(actividad instanceof TIf)
+		{
+			visit((TIf) actividad);
+		}
+	}
+	
+	//Funciones para cada tipo
+	public void visit(TIf actividad)
+	{
+		//Vamos a imprimir cosas en el fichero
 	}
 	
 	public static void main(String[] args) 
