@@ -4,11 +4,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.wsdl.WSDLException;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -18,6 +20,11 @@ import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import es.uca.webservices.bpel.InvalidProcessException;
@@ -34,7 +41,7 @@ public class BPELActivityTest {
 	
 	//ELIMINAR
 	//Ruta donde escribirá los archivos auxiliares
-	private String path2 = "/home/kevin/Colaboracion/actividades/actividad";
+	private String path2 = "/home/kevin/Colaboracion/actividades/";
 	
 	//Raw constants
 	//private Map<String, Set<String>> rawConstants;
@@ -58,7 +65,7 @@ public class BPELActivityTest {
 	}
 	
 	//Obtiene las actividades del fichero bpel que está abierto en la propia clase
-	public void visitActivities() throws IOException
+	public void visitActivities() throws IOException, SAXException, ParserConfigurationException
 	{
 		//ELIMINAR
 		int i = 0;
@@ -97,7 +104,7 @@ public class BPELActivityTest {
 	}
 	
 	//Funciones para visitar cada actividad individualmente
-	public void accept(TActivity actividad)
+	public void accept(TActivity actividad) throws IOException, SAXException, ParserConfigurationException
 	{
 		if(actividad instanceof TIf)
 		{
@@ -106,9 +113,40 @@ public class BPELActivityTest {
 	}
 	
 	//Funciones para cada tipo
-	public void visit(TIf actividad)
+	public void visit(TIf actividad) throws IOException, SAXException, ParserConfigurationException
 	{
 		//Vamos a imprimir cosas en el fichero
+		File auxIf = new File(this.path2 + actividad.getName() + "Condition.txt");
+		BufferedWriter impIf = new BufferedWriter(new FileWriter(auxIf));
+		impIf.write(actividad.getCondition().xmlText());
+		impIf.close();
+		
+		convert(actividad);
+	}
+	
+	//IDEA LOCA: CONVERTIR EL XML-FRAGMENT A DOCUMENT PARA OBTENER SOLO LA CONDICION
+	public void convert(TIf actividad) throws SAXException, IOException, ParserConfigurationException
+	{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setValidating(true);
+		
+		Document doc = factory.newDocumentBuilder().parse(new File(this.path2 + actividad.getName() + "Condition.txt"));
+		String fragment = actividad.getCondition().toString();
+		
+		factory = DocumentBuilderFactory.newInstance();
+	    Document d = factory.newDocumentBuilder().parse(new InputSource(new StringReader(fragment)));
+	    
+	    Node node = doc.importNode(d.getDocumentElement(), true);
+	    
+	    DocumentFragment docfrag = doc.createDocumentFragment();
+	    
+	    while(node.hasChildNodes())
+	    {
+	    	docfrag.appendChild(node.removeChild(node.getFirstChild()));
+	    }
+	    
+	    Element element = doc.getDocumentElement();
+	    element.appendChild(docfrag);
 	}
 	
 	public static void main(String[] args) 
