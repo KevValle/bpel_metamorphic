@@ -19,8 +19,10 @@ import org.oasisOpen.docs.wsbpel.x20.process.executable.TActivity;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TAssign;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TBooleanExpr;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TCopy;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TElseif;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TForEach;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TFrom;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
@@ -105,12 +107,12 @@ public class BPELActivityTest {
 			
 			System.out.println("Me llamo "+actividad.getName());
 			
-			File aux = new File(this.path2 + actividad.getName() + ".txt");
+			/*File aux = new File(this.path2 + actividad.getName() + ".txt");
 			BufferedWriter imp = new BufferedWriter(new FileWriter(aux));
 			imp.write(actividad.toString());
 			imp.close();
 			
-			i++;
+			i++;*/
 			
 			accept(actividad);			
 		}
@@ -119,16 +121,32 @@ public class BPELActivityTest {
 	//Funciones para visitar cada actividad individualmente
 	public void accept(TActivity actividad) throws IOException, SAXException, ParserConfigurationException
 	{
+		if(actividad instanceof TAssign)
+		{
+			visit((TAssign) actividad);
+		}
+		
 		if(actividad instanceof TWhile)
 		{
 			visit((TWhile) actividad);
 		}
+		
 		if(actividad instanceof TIf)
 		{
 			visit((TIf) actividad);
 		}
 	}
 	
+	private void visit(TAssign actividad) throws IOException
+	{
+		for(TCopy cop : actividad.getCopyArray())
+		{
+			TFrom from = cop.getFrom();
+			
+			System.out.println("Copy "+cop.toString()+" from "+from.toString());
+		}
+	}
+
 	public void visit(TWhile actividad) throws IOException 
 	{
 		getConditionExpression(actividad.getCondition(), actividad.getName());
