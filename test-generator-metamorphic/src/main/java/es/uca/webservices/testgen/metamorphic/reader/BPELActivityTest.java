@@ -16,7 +16,9 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xmlbeans.XmlException;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TActivity;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TBooleanExpr;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TElseif;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
@@ -53,6 +55,10 @@ public class BPELActivityTest {
 	public BPELActivityTest(String path)
 	{
 		this.path = path;
+		if(conditionsAux.exists())
+		{
+			conditionsAux.delete();
+		}
 	}
 	
 	public BPELSource getBPELSource()
@@ -119,18 +125,20 @@ public class BPELActivityTest {
 	//Funciones para cada tipo
 	public void visit(TIf actividad) throws IOException, SAXException, ParserConfigurationException
 	{
-		//Vamos a imprimir cosas en el fichero
-		BufferedWriter impIf = new BufferedWriter(new FileWriter(conditionsAux, true));
-		impIf.write(XMLUtils.getExpression(actividad.getCondition())+"\t"+actividad.getName()+"\n");
-		impIf.close();
-		
-		convert(actividad);
+		getConditionExpression(actividad.getCondition(), actividad.getName());
 	}
 	
 	//IDEA LOCA: CONVERTIR EL XML-FRAGMENT A DOCUMENT PARA OBTENER SOLO LA CONDICION
-	public void convert(TIf actividad) throws SAXException, IOException, ParserConfigurationException
+	/*public void convert(TIf actividad) throws SAXException, IOException, ParserConfigurationException
 	{
 		System.out.print("ESTO ES LA PRUEBA: "+XMLUtils.getExpression(actividad.getCondition()));
+	}*/
+	
+	public void getConditionExpression(TBooleanExpr expr, String act) throws IOException
+	{
+		BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
+		impCond.write(XMLUtils.getExpression(expr)+"\t"+act+"\n");
+		impCond.close();
 	}
 	
 	public static void main(String[] args) 
