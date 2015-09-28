@@ -143,7 +143,7 @@ public class BPELActivityTest {
 		{
 			TFrom from = cop.getFrom();
 			
-			System.out.println("Copy "+cop.toString()+" from "+from.toString());
+			System.out.println("Copy to"+XMLUtils.getExpression(cop)+" from "+XMLUtils.getExpression(from));
 		}
 	}
 
