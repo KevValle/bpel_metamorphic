@@ -16,12 +16,15 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xmlbeans.XmlException;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TActivity;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TAssign;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TBooleanExpr;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TCondition;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TElseif;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TForEach;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TWhile;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -116,23 +119,31 @@ public class BPELActivityTest {
 	//Funciones para visitar cada actividad individualmente
 	public void accept(TActivity actividad) throws IOException, SAXException, ParserConfigurationException
 	{
+		if(actividad instanceof TWhile)
+		{
+			visit((TWhile) actividad);
+		}
 		if(actividad instanceof TIf)
 		{
 			visit((TIf) actividad);
 		}
 	}
 	
+	public void visit(TWhile actividad) throws IOException 
+	{
+		getConditionExpression(actividad.getCondition(), actividad.getName());
+	}
+
 	//Funciones para cada tipo
 	public void visit(TIf actividad) throws IOException, SAXException, ParserConfigurationException
 	{
 		getConditionExpression(actividad.getCondition(), actividad.getName());
+		for (TElseif ei : actividad.getElseifArray()) {
+			getConditionExpression(ei.getCondition(), actividad.getName());
+		}
 	}
 	
-	//IDEA LOCA: CONVERTIR EL XML-FRAGMENT A DOCUMENT PARA OBTENER SOLO LA CONDICION
-	/*public void convert(TIf actividad) throws SAXException, IOException, ParserConfigurationException
-	{
-		System.out.print("ESTO ES LA PRUEBA: "+XMLUtils.getExpression(actividad.getCondition()));
-	}*/
+	
 	
 	public void getConditionExpression(TBooleanExpr expr, String act) throws IOException
 	{
@@ -146,7 +157,8 @@ public class BPELActivityTest {
 			ParserConfigurationException, SAXException, InvalidProcessException, WSDLException
 	{
 		//Este main está aquí solo para probar
-		String ruta = "/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel";
+		//String ruta = "/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel";
+		String ruta = "/home/kevin/Colaboracion/triangle/Triangle/Triangle.bpel";
 		BPELActivityTest test = new BPELActivityTest(ruta);
 		test.openFile();
 		
