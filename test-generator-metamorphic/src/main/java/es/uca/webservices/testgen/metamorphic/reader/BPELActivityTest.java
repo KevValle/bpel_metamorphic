@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 import es.uca.webservices.bpel.InvalidProcessException;
 import es.uca.webservices.testgen.autoseed.reader.constants.BPELConstReaderVisitor;
 import es.uca.webservices.testgen.autoseed.source.BPELSource;
+import es.uca.webservices.testgen.autoseed.source.XMLUtils;
 
 public class BPELActivityTest {
 	
@@ -42,6 +43,9 @@ public class BPELActivityTest {
 	//ELIMINAR
 	//Ruta donde escribirá los archivos auxiliares
 	private String path2 = "/home/kevin/Colaboracion/actividades/";
+	
+	//Fichero donde guardo todas las condiciones
+	private File conditionsAux = new File(this.path2 + "Condiciones.txt");
 	
 	//Raw constants
 	//private Map<String, Set<String>> rawConstants;
@@ -116,9 +120,8 @@ public class BPELActivityTest {
 	public void visit(TIf actividad) throws IOException, SAXException, ParserConfigurationException
 	{
 		//Vamos a imprimir cosas en el fichero
-		File auxIf = new File(this.path2 + actividad.getName() + "Condition.txt");
-		BufferedWriter impIf = new BufferedWriter(new FileWriter(auxIf));
-		impIf.write(actividad.getCondition().xmlText());
+		BufferedWriter impIf = new BufferedWriter(new FileWriter(conditionsAux, true));
+		impIf.write(XMLUtils.getExpression(actividad.getCondition())+"\t"+actividad.getName()+"\n");
 		impIf.close();
 		
 		convert(actividad);
@@ -127,26 +130,7 @@ public class BPELActivityTest {
 	//IDEA LOCA: CONVERTIR EL XML-FRAGMENT A DOCUMENT PARA OBTENER SOLO LA CONDICION
 	public void convert(TIf actividad) throws SAXException, IOException, ParserConfigurationException
 	{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(true);
-		
-		Document doc = factory.newDocumentBuilder().parse(new File(this.path2 + actividad.getName() + "Condition.txt"));
-		String fragment = actividad.getCondition().toString();
-		
-		factory = DocumentBuilderFactory.newInstance();
-	    Document d = factory.newDocumentBuilder().parse(new InputSource(new StringReader(fragment)));
-	    
-	    Node node = doc.importNode(d.getDocumentElement(), true);
-	    
-	    DocumentFragment docfrag = doc.createDocumentFragment();
-	    
-	    while(node.hasChildNodes())
-	    {
-	    	docfrag.appendChild(node.removeChild(node.getFirstChild()));
-	    }
-	    
-	    Element element = doc.getDocumentElement();
-	    element.appendChild(docfrag);
+		System.out.print("ESTO ES LA PRUEBA: "+XMLUtils.getExpression(actividad.getCondition()));
 	}
 	
 	public static void main(String[] args) 
