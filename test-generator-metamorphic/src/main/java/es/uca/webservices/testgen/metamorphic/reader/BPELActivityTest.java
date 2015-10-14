@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.wsdl.WSDLException;
@@ -179,14 +180,36 @@ public class BPELActivityTest {
 			throws XPathExpressionException, XmlException, IOException, 
 			ParserConfigurationException, SAXException, InvalidProcessException, WSDLException
 	{
-		//Este main está aquí solo para probar
-		//String ruta = "/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel";
-		String ruta = "/home/kevin/Colaboracion/triangle/Triangle/Triangle.bpel";
-		//String ruta = "/home/kevin/Colaboracion/triagleNormalizado/Triangle/Triangle.bpel";
-		BPELActivityTest test = new BPELActivityTest(ruta);
+		//Main para probar
+		
+		//Array con rutas
+		String rutas[] = {"/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel",
+				"/home/kevin/Colaboracion/triangle/Triangle/Triangle.bpel",
+				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel"
+		};
+		
+		int r = 0;
+		
+		//Switch para pruebas, se pueden añadir facilmente rutas
+		Scanner s = new Scanner(System.in);
+		System.out.println("Rutas disponibles:");
+		
+		for(int i = 0; i < rutas.length; i++)
+		{
+			System.out.println("Numero "+i+": "+rutas[i]);
+		}
+		
+		System.out.print("Selecciona el numero de la ruta: ");
+		r = s.nextInt();
+		
+		
+		
+		BPELActivityTest test = new BPELActivityTest(rutas[r]);
 		test.openFile();
 		
 		test.visitActivities();
+		
+		System.out.println("Completado");
 	}
 	
 }
