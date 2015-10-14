@@ -26,6 +26,7 @@ import org.oasisOpen.docs.wsbpel.x20.process.executable.TFrom;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TIf;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSource;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TSources;
+import org.oasisOpen.docs.wsbpel.x20.process.executable.TTo;
 import org.oasisOpen.docs.wsbpel.x20.process.executable.TWhile;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -103,17 +104,17 @@ public class BPELActivityTest {
 						System.out.println(expr);
 					}
 				}
-			}*/
+			}
 			
 			System.out.println("Me llamo "+actividad.getName());
 			
-			/*File aux = new File(this.path2 + actividad.getName() + ".txt");
+			File aux = new File(this.path2 + actividad.getName() + ".txt");
 			BufferedWriter imp = new BufferedWriter(new FileWriter(aux));
 			imp.write(actividad.toString());
 			imp.close();
 			
-			i++;*/
-			
+			i++;
+			*/
 			accept(actividad);			
 		}
 	}
@@ -142,8 +143,12 @@ public class BPELActivityTest {
 		for(TCopy cop : actividad.getCopyArray())
 		{
 			TFrom from = cop.getFrom();
+			TTo to = cop.getTo();
 			
-			System.out.println("Copy to"+XMLUtils.getExpression(cop)+" from "+XMLUtils.getExpression(from));
+			BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
+			impCond.write("Copy from "+XMLUtils.getExpression(from)+" to "+to.getVariable()+"\t"+actividad.getName()+"\n");
+			impCond.close();
+
 		}
 	}
 
@@ -177,6 +182,7 @@ public class BPELActivityTest {
 		//Este main está aquí solo para probar
 		//String ruta = "/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel";
 		String ruta = "/home/kevin/Colaboracion/triangle/Triangle/Triangle.bpel";
+		//String ruta = "/home/kevin/Colaboracion/triagleNormalizado/Triangle/Triangle.bpel";
 		BPELActivityTest test = new BPELActivityTest(ruta);
 		test.openFile();
 		
