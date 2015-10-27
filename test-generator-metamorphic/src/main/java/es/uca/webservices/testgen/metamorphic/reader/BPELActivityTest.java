@@ -139,6 +139,11 @@ public class BPELActivityTest {
 		{
 			visit((TIf) actividad);
 		}
+		
+		if(actividad instanceof TForEach)
+		{
+			visit((TForEach) actividad);
+		}
 	}
 	
 	
@@ -149,6 +154,7 @@ public class BPELActivityTest {
 		{
 			TFrom from = cop.getFrom();
 			TTo to = cop.getTo();
+			
 			
 			BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
 			impCond.write("Copy from "+XMLUtils.getExpression(from)+" to "+to.getVariable()+"\t"+actividad.getName()+"\n");
@@ -172,8 +178,29 @@ public class BPELActivityTest {
 		}
 	}
 	
+	//Obtiene los datos del forEach
+	public void visit(TForEach actividad) throws IOException
+	{
+		String impresion = "startCounterValue: "+ XMLUtils.getExpression(actividad.getStartCounterValue()) +
+			"\t finalCounterValue: " + XMLUtils.getExpression(actividad.getFinalCounterValue()) + 
+			"\t pararel: " + XMLUtils.getExpression(actividad.xgetParallel());
+		
+		if(actividad.getCompletionCondition() != null) 
+			impresion += "\t CompletionCondition: " + XMLUtils.getExpression(actividad.getCompletionCondition());
+		else
+			impresion += "\t CompletionCondition: no";
+		
+		
+		
+		BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
+		impCond.write(impresion+"\t"+actividad.getName()+"\n");
+		
+		impCond.close();
+		
+	}
 	
-	//Aqui se obtiene la conficion
+	
+	//Aqui se obtiene la condicion
 	public void getConditionExpression(TBooleanExpr expr, String act) throws IOException
 	{
 		BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
@@ -190,7 +217,7 @@ public class BPELActivityTest {
 		//Array con rutas
 		String rutas[] = {"/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel",
 				"/home/kevin/Colaboracion/Triangle/Triangle.bpel",
-				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel"
+				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel"	
 		};
 		
 		int r = 0;
