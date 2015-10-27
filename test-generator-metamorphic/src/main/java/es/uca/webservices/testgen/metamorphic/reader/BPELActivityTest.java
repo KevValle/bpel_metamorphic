@@ -58,7 +58,8 @@ public class BPELActivityTest {
 	
 	//Raw constants
 	//private Map<String, Set<String>> rawConstants;
-
+	
+	//Constructor, crea un archivo nuevo cada vez para las condiciones
 	public BPELActivityTest(String path)
 	{
 		this.path = path;
@@ -68,6 +69,7 @@ public class BPELActivityTest {
 		}
 	}
 	
+	//Obtiene la fuente BPEL
 	public BPELSource getBPELSource()
 	{
 		return bpel;
@@ -139,6 +141,8 @@ public class BPELActivityTest {
 		}
 	}
 	
+	
+	//Visita una actividad Assign y la escribe en el fichero
 	private void visit(TAssign actividad) throws IOException
 	{
 		for(TCopy cop : actividad.getCopyArray())
@@ -152,13 +156,14 @@ public class BPELActivityTest {
 
 		}
 	}
-
+	
+	//Obtiene la condicion del While
 	public void visit(TWhile actividad) throws IOException 
 	{
 		getConditionExpression(actividad.getCondition(), actividad.getName());
 	}
 
-	//Funciones para cada tipo
+	//Obtiene la conficion del if
 	public void visit(TIf actividad) throws IOException, SAXException, ParserConfigurationException
 	{
 		getConditionExpression(actividad.getCondition(), actividad.getName());
@@ -168,7 +173,7 @@ public class BPELActivityTest {
 	}
 	
 	
-	
+	//Aqui se obtiene la conficion
 	public void getConditionExpression(TBooleanExpr expr, String act) throws IOException
 	{
 		BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
@@ -184,7 +189,7 @@ public class BPELActivityTest {
 		
 		//Array con rutas
 		String rutas[] = {"/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel",
-				"/home/kevin/Colaboracion/triangle/Triangle/Triangle.bpel",
+				"/home/kevin/Colaboracion/Triangle/Triangle.bpel",
 				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel"
 		};
 		
