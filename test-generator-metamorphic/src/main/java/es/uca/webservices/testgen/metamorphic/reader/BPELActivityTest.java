@@ -156,9 +156,13 @@ public class BPELActivityTest {
 			TTo to = cop.getTo();
 			
 			
-			BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
-			impCond.write("Copy from "+XMLUtils.getExpression(from)+" to "+to.getVariable()+"\t"+actividad.getName()+"\n");
-			impCond.close();
+			if(from != null) {
+				try{
+				BufferedWriter impCond = new BufferedWriter(new FileWriter(conditionsAux, true));
+				impCond.write("Copy from "+XMLUtils.getExpression(from)+" to "+to.getVariable()+"\t"+actividad.getName()+"\n");
+				impCond.close();
+				}catch(NullPointerException e) {System.out.println("Error"); }
+			}
 
 		}
 	}
@@ -217,7 +221,8 @@ public class BPELActivityTest {
 		//Array con rutas
 		String rutas[] = {"/home/kevin/Colaboracion/wsbpel-comp-repo/LoanApprovalDoc/LoanApprovalProcess.bpel",
 				"/home/kevin/Colaboracion/Triangle/Triangle.bpel",
-				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel"	
+				"/home/kevin/Colaboracion/wsbpel-comp-repo/squaresSum_2/squaresSum_2.bpel",
+				"/home/kevin/Colaboracion/wsbpel-comp-repo/tradeIncome/tradeIncome.bpel"
 		};
 		
 		int r = 0;
